@@ -12,12 +12,22 @@ const categoriesRouter = require('./routes/categories');
 
 const app = express();
 
+// Build allowed origins list (support comma-separated FRONTEND_URL)
+const rawFrontend = process.env.FRONTEND_URL || ['https://utsavdecorandevents.firebaseapp.com', 'https://utsavdecorandevents.web.app', 'http://localhost:5173'];
+const allowedOrigins = (Array.isArray(rawFrontend) ? rawFrontend : String(rawFrontend).split(',')).map(u => String(u).trim().replace(/\/+$/, ''));
+
 const corsOptions = {
-  // Allow the deployed frontend hosts by default, or use FRONTEND_URL env var
-  origin: process.env.FRONTEND_URL || ['https://utsavdecorandevents.firebaseapp.com', 'https://utsavdecorandevents.web.app', 'http://localhost:5173'],
+  origin: function (origin, callback) {
+    // If no origin (server-to-server or same-origin) allow it
+    if (!origin) return callback(null, true);
+    const normalized = origin.replace(/\/+$/, '');
+    if (allowedOrigins.includes(normalized)) return callback(null, true);
+    return callback(new Error('CORS policy: origin not allowed'), false);
+  },
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'x-admin-key'],
   exposedHeaders: ['x-admin-key'],
+  optionsSuccessStatus: 200,
 };
 
 app.use(cors(corsOptions));
