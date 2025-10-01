@@ -9,6 +9,7 @@ const connectDB = require('./db');
 const productsRouter = require('./routes/products');
 const inquiriesRouter = require('./routes/inquiries');
 const categoriesRouter = require('./routes/categories');
+const adminRouter = require('./routes/admin');
 
 const app = express();
 
@@ -40,6 +41,8 @@ connectDB()
   .then(() => {
   const adminKeyPresent = !!(process.env.ADMIN_API_KEY || process.env.VITE_ADMIN_KEY);
   console.log('Admin API key configured:', adminKeyPresent);
+  // Public and admin routes
+  app.use('/api/admin', adminRouter);
   app.use('/api/products', productsRouter);
   app.use('/api/inquiries', inquiriesRouter);
   app.use('/api/categories', categoriesRouter);

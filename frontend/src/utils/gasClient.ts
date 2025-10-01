@@ -64,10 +64,8 @@ export async function fetchRowById(id: string): Promise<ApiRow | null> {
 
 export async function addRow(payload: Partial<ApiRow>): Promise<{ id: string }> {
   const headers: any = { 'Content-Type': 'application/json' };
-  const envAdmin = (import.meta as any).env?.VITE_ADMIN_KEY || '';
   const sessionAdmin = typeof window !== 'undefined' ? sessionStorage.getItem('UTSAV_ADMIN_KEY') : null;
   if (sessionAdmin) headers['x-admin-key'] = sessionAdmin;
-  else if (envAdmin) headers['x-admin-key'] = envAdmin;
 
   let res: Response;
   try {

@@ -33,9 +33,7 @@ function apiUrl(path = '') {
 function getAuthHeaders(): Record<string, string> {
   const headers: Record<string, string> = { 'Content-Type': 'application/json' };
   const adminKey = typeof window !== 'undefined' ? sessionStorage.getItem('UTSAV_ADMIN_KEY') : null;
-  const envAdmin = (import.meta as any).env?.VITE_ADMIN_KEY || '';
   if (adminKey) headers['x-admin-key'] = adminKey;
-  else if (envAdmin) headers['x-admin-key'] = envAdmin;
   return headers;
 }
 

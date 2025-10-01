@@ -6,26 +6,29 @@ const AdminLogin: React.FC = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
-  const envKey = (import.meta as any).env?.VITE_ADMIN_KEY || '';
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Check for hardcoded credentials first.
     if (username === 'admin' && password === '123') {
-      if (!envKey) return setError('VITE_ADMIN_KEY is not set in your .env file.');
-      sessionStorage.setItem('UTSAV_ADMIN_KEY', envKey);
-      navigate('/admin');
+      // Call backend to obtain a short-lived token
+      fetch((import.meta as any).env?.VITE_API_ENDPOINT.replace(/\/+$/, '') + '/api/admin/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password }),
+      })
+        .then(r => r.json())
+        .then((json) => {
+          if (!json.success) return setError(json.error || 'Login failed');
+          sessionStorage.setItem('UTSAV_ADMIN_KEY', json.token);
+          navigate('/admin');
+        })
+        .catch(() => setError('Network error while logging in'));
       return;
     }
 
     setError('Invalid username or password');
   };
 
-  const useEnvKey = () => {
-    if (!envKey) return setError('No VITE_ADMIN_KEY set in environment');
-    sessionStorage.setItem('UTSAV_ADMIN_KEY', envKey);
-    navigate('/admin');
-  };
 
   return (
     <div className="max-w-md mx-auto p-6 bg-white rounded-xl shadow mt-12">
@@ -37,7 +40,6 @@ const AdminLogin: React.FC = () => {
 
         <div className="flex items-center space-x-2">
           <button type="submit" className="bg-primary text-white px-4 py-2 rounded">Sign in</button>
-          <button type="button" onClick={useEnvKey} className="px-3 py-2 border rounded">Use VITE_ADMIN_KEY</button>
         </div>
       </form>
 

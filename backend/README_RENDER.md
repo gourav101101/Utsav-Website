@@ -53,23 +53,28 @@ npm run seed
 B) Use Render's "Manual Job" / "Run" feature (if available) to run `npm run seed` once with the same environment variables set in Render.
 
 ## 6) Verifying admin endpoints
-- After deploy, open Render logs and check the server started and lists the admin key presence.
-- From your local machine, test:
 ```bash
 curl -X GET https://utsav-website.onrender.com/api/categories
 ```
-- To create a category (admin-protected):
+ After deploy, open Render logs and check the server started and lists the admin key presence.
+ From your local machine, test:
 ```bash
+curl -X GET https://utsav-website.onrender.com/api/categories
+```
+# Preferred: obtain a short-lived token by logging in, then use that token for admin requests
+curl -X POST https://utsav-website.onrender.com/api/admin/login \
+  -H "Content-Type: application/json" \
+  -d '{"username":"admin","password":"123"}'
+
+# Response: { "success": true, "token": "..." }
+
+# Use the token to create a category:
 curl -X POST https://utsav-website.onrender.com/api/categories \
   -H "Content-Type: application/json" \
-  -H "x-admin-key: <YOUR_ADMIN_KEY>" \
+  -H "x-admin-key: <TOKEN_FROM_LOGIN>" \
   -d '{"name":"New Cat"}'
-```
 
-## 7) Troubleshooting
-- 403 responses when creating/updating: Ensure `ADMIN_API_KEY` is set in Render and matches the `x-admin-key` header the client sends.
-- Connection refused / DNS issues: Make sure your Atlas cluster allows connections from Render. As a quick test, set Atlas IP Access to 0.0.0.0/0 (temporary) or add Render's outbound IPs.
-- Logs: Use Render's live logs. If you set `DEBUG_ADMIN_AUTH=1`, the server will print masked admin-key debug lines.
+
 
 ## 8) Security recommendations (next steps)
 - Replace static admin key with a proper auth strategy (JWT or OAuth) for real production.
