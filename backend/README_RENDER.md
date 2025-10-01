@@ -56,11 +56,11 @@ B) Use Render's "Manual Job" / "Run" feature (if available) to run `npm run seed
 - After deploy, open Render logs and check the server started and lists the admin key presence.
 - From your local machine, test:
 ```bash
-curl -X GET https://<your-render-service>.onrender.com/api/categories
+curl -X GET https://utsav-website.onrender.com/api/categories
 ```
 - To create a category (admin-protected):
 ```bash
-curl -X POST https://<your-render-service>.onrender.com/api/categories \
+curl -X POST https://utsav-website.onrender.com/api/categories \
   -H "Content-Type: application/json" \
   -H "x-admin-key: <YOUR_ADMIN_KEY>" \
   -d '{"name":"New Cat"}'

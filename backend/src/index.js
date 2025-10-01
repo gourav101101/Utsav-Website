@@ -13,7 +13,8 @@ const categoriesRouter = require('./routes/categories');
 const app = express();
 
 const corsOptions = {
-  origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+  // Allow the deployed frontend hosts by default, or use FRONTEND_URL env var
+  origin: process.env.FRONTEND_URL || ['https://utsavdecorandevents.firebaseapp.com', 'https://utsavdecorandevents.web.app', 'http://localhost:5173'],
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'x-admin-key'],
   exposedHeaders: ['x-admin-key'],

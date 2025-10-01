@@ -1,7 +1,7 @@
 /*
  * API client helper for the React app.
  * Usage: set your backend URL in .env as VITE_API_ENDPOINT, for example:
- *   VITE_API_ENDPOINT=http://localhost:4000
+ *   VITE_API_ENDPOINT=https://utsav-website.onrender.com
  */
 
 export type ApiRow = {
@@ -23,7 +23,7 @@ export type ApiRow = {
 
 const API_ENDPOINT = (import.meta as any).env?.VITE_API_ENDPOINT || '';
 
-if (!API_ENDPOINT) console.warn('VITE_API_ENDPOINT not set. Please add your backend URL to .env (e.g. VITE_API_ENDPOINT=http://localhost:4000)');
+if (!API_ENDPOINT) console.warn('VITE_API_ENDPOINT not set. Please add your backend URL to .env (e.g. VITE_API_ENDPOINT=https://utsav-website.onrender.com)');
 
 function apiUrl(path = '') {
   if (!API_ENDPOINT) throw new Error('API endpoint not configured');
