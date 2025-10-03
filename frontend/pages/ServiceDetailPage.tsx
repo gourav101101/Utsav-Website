@@ -74,17 +74,54 @@ const ServiceDetailPage: React.FC = () => {
         setError(err.message || 'Failed to load service.');
       } finally {
         setLoading(false);
-        window.scrollTo(0, 0);
       }
     }
     loadService();
   }, [id]);
 
   if (loading) {
+    // Detailed skeleton matching the service detail layout
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold mb-4">Loading...</h2>
+      <div className="bg-white min-h-screen">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <div className="grid grid-cols-1 xl:grid-cols-5 gap-12">
+            <div className="xl:col-span-3">
+              <div className="animate-pulse">
+                <div className="w-full h-40 sm:h-56 md:h-80 lg:h-[500px] bg-gray-200 rounded-2xl mb-4" />
+                <div className="flex space-x-3 mt-4 pb-2 overflow-x-auto">
+                  {Array.from({ length: 4 }).map((_, i) => (
+                    <div key={i} className="w-14 h-14 sm:w-16 sm:h-16 lg:w-24 lg:h-24 bg-gray-200 rounded-xl flex-shrink-0" />
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <div className="xl:col-span-2">
+              <div className="animate-pulse bg-gradient-to-br from-gray-50 to-white p-6 sm:p-8 rounded-2xl border border-gray-100">
+                <div className="h-8 bg-gray-200 rounded w-3/4 mb-4" />
+                <div className="h-4 bg-gray-200 rounded w-full mb-3" />
+                <div className="h-4 bg-gray-200 rounded w-full mb-6" />
+                <div className="h-12 bg-gray-200 rounded w-full mb-4" />
+                <div className="flex items-center justify-between">
+                  <div className="h-6 bg-gray-200 rounded w-1/3" />
+                  <div className="h-6 bg-gray-200 rounded w-1/4" />
+                </div>
+                <div className="mt-4 h-3 bg-gray-200 rounded w-1/2" />
+              </div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 xl:grid-cols-5 gap-12 mt-16">
+            <div className="xl:col-span-3 space-y-8">
+              <div className="animate-pulse bg-white border border-gray-200 rounded-2xl p-8 shadow-sm h-40" />
+              <div className="animate-pulse bg-white border border-gray-200 rounded-2xl p-8 shadow-sm h-40" />
+              <div className="animate-pulse bg-white border border-gray-200 rounded-2xl p-8 shadow-sm h-40" />
+            </div>
+
+            <div className="xl:col-span-2">
+              <div className="animate-pulse bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl p-6 border border-purple-100 h-48" />
+            </div>
+          </div>
         </div>
       </div>
     );
@@ -240,12 +277,7 @@ const ServiceDetailPage: React.FC = () => {
                   </ul>
                 </div>
                 
-                <div className="bg-white border border-gray-200 rounded-2xl p-8 shadow-sm">
-                  <h2 className="text-2xl font-bold mb-6 text-gray-900">About This Experience</h2>
-                  <div className="prose prose-lg text-gray-700 leading-relaxed">
-                    <p>{service.longDescription}</p>
-                  </div>
-                </div>
+                {/* 'About This Experience' section removed as requested */}
             </div>
             
             {/* Sidebar for desktop */}

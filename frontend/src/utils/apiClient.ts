@@ -119,12 +119,16 @@ export async function createProduct(payload: {
   images?: string[];
   price?: string;
   category?: string;
+  inclusions?: string[];
 }) : Promise<{ id: string }> {
   const headers = getAuthHeaders();
   let res: Response;
   // normalize to send images array for backend
   const bodyPayload: any = { ...payload };
   if (!bodyPayload.images && bodyPayload.image) bodyPayload.images = [bodyPayload.image];
+  if (bodyPayload.inclusions && !Array.isArray(bodyPayload.inclusions)) {
+    bodyPayload.inclusions = String(bodyPayload.inclusions).split(',').map((s:string)=>s.trim()).filter(Boolean);
+  }
   try {
     res = await fetch(apiUrl('/api/products'), {
       method: 'POST',
@@ -147,6 +151,9 @@ export async function updateProduct(id: string, payload: Partial<ApiRow>) : Prom
   // normalize images
   const bodyPayload: any = { ...payload };
   if (!bodyPayload.images && bodyPayload.image) bodyPayload.images = [bodyPayload.image];
+  if (bodyPayload.inclusions && !Array.isArray(bodyPayload.inclusions)) {
+    bodyPayload.inclusions = String(bodyPayload.inclusions).split(',').map((s:string)=>s.trim()).filter(Boolean);
+  }
   try {
     res = await fetch(apiUrl(`/api/products/${id}`), {
       method: 'PUT',

@@ -53,7 +53,7 @@ const TermsAndConditionsPage: React.FC = () => {
                             <span className="bg-primary/10 text-primary rounded-lg p-2 text-lg font-bold">3</span>
                             <span>Contact</span>
                         </h2>
-                        <p className="text-gray-700 leading-relaxed text-lg">Contact us at <a href="tel:+919752844488" className="text-primary hover:underline font-semibold">+91 97528 44488</a>.</p>
+                        <p className="text-gray-700 leading-relaxed text-lg">Contact us at <a href="tel:+91981666060" className="text-primary hover:underline font-semibold">+91 99816 66060</a>.</p>
                     </div>
                 </div>
 
@@ -62,13 +62,13 @@ const TermsAndConditionsPage: React.FC = () => {
                         <h3 className="text-2xl font-bold mb-4">Ready to Plan Your Event?</h3>
                         <div className="flex flex-col sm:flex-row gap-4 justify-center">
                             <a 
-                                href="tel:+919752844488" 
+                                href="tel:+91981666060" 
                                 className="bg-white text-primary px-8 py-4 rounded-2xl font-bold hover:bg-gray-100 transition-colors"
                             >
                                 ��� Call Now
                             </a>
                             <a 
-                                href="https://wa.me/919752844488" 
+                                href="https://wa.me/91981666060" 
                                 target="_blank" 
                                 rel="noopener noreferrer"
                                 className="bg-green-500 text-white px-8 py-4 rounded-2xl font-bold hover:bg-green-600 transition-colors"

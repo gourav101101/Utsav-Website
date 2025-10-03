@@ -10,10 +10,10 @@ type Props = {
 };
 
 const EditProductModal: React.FC<Props> = ({ open, product, categories = [], loading, onCancel, onSave }) => {
-  const [form, setForm] = useState({ title: '', description: '', price: '', category: '', image: '', images: [] as string[] });
+  const [form, setForm] = useState({ title: '', description: '', price: '', category: '', image: '', images: [] as string[], inclusions: [] as string[] });
 
   useEffect(() => {
-    if (product) setForm({ title: product.title || '', description: product.description || '', price: product.price || '', category: product.category || '', image: product.image || '', images: product.images || (product.image ? [product.image] : []) });
+    if (product) setForm({ title: product.title || '', description: product.description || '', price: product.price || '', category: product.category || '', image: product.image || '', images: product.images || (product.image ? [product.image] : []), inclusions: product.inclusions || [] });
   }, [product]);
 
   if (!open) return null;
@@ -60,12 +60,27 @@ const EditProductModal: React.FC<Props> = ({ open, product, categories = [], loa
               </div>
             </div>
           </div>
+          <div className="md:col-span-2">
+            <label className="block text-sm text-gray-700 mb-2">What's Included (inclusions)</label>
+            <div className="space-y-2">
+              {form.inclusions.map((inc, idx) => (
+                <div key={idx} className="flex items-center gap-2">
+                  <input className="flex-1 p-2 border rounded" value={inc} onChange={e => setForm({ ...form, inclusions: form.inclusions.map((x,i)=> i===idx ? e.target.value : x) })} />
+                  <button type="button" className="px-3 py-2 sm:py-1 rounded border text-sm" onClick={() => setForm({ ...form, inclusions: form.inclusions.filter((_,i)=>i!==idx) })}>Remove</button>
+                </div>
+              ))}
+              <div>
+                <button type="button" className="px-3 py-2 rounded bg-primary text-white" onClick={() => setForm({ ...form, inclusions: [...form.inclusions, ''] })}>Add Inclusion</button>
+              </div>
+            </div>
+          </div>
         </div>
         <div className="flex flex-col-reverse sm:flex-row justify-end gap-3 mt-6">
           <button className="px-4 py-3 rounded border w-full md:w-auto text-center" onClick={onCancel} disabled={loading}>Cancel</button>
           <button className="px-4 py-3 rounded bg-primary text-white w-full md:w-auto text-center" onClick={() => {
             const imagesArr = (form.images || []).map((s:string)=>s.trim()).filter(Boolean);
-            onSave({ title: form.title, description: form.description, price: form.price, category: form.category, images: imagesArr });
+            const incs = (form.inclusions || []).map((s:string)=>s.trim()).filter(Boolean);
+            onSave({ title: form.title, description: form.description, price: form.price, category: form.category, images: imagesArr, inclusions: incs });
           }} disabled={loading}>{loading ? 'Saving...' : 'Save'}</button>
         </div>
       </div>

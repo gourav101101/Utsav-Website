@@ -19,6 +19,15 @@ const AppContent: React.FC = () => {
   // Hide header/footer/whatsapp on admin routes (login + panel)
   const isAdminRoute = location.pathname.startsWith('/admin');
 
+  // Ensure we scroll to top when the route changes so header is visible
+  React.useEffect(() => {
+    try {
+      if (!isAdminRoute) window.scrollTo({ top: 0, behavior: 'auto' });
+    } catch (e) {
+      // ignore in environments that disallow scrolling
+    }
+  }, [location.pathname, isAdminRoute]);
+
   return (
     <div className="bg-gray-50 min-h-screen flex flex-col font-sans text-gray-800">
       {!isAdminRoute && <Header />}

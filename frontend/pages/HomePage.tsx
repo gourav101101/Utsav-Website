@@ -192,7 +192,29 @@ const HomePage: React.FC = () => {
               Discover our curated collection of premium services designed to make your celebrations unforgettable
             </p>
           </div>
-           {filteredServices.length > 0 ? (
+           {dynamicServices === null ? (
+            // Loading skeleton while API requests are in flight
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8">
+              {Array.from({ length: 8 }).map((_, i) => (
+                <div key={i} className="animate-pulse">
+                  <div className="bg-white rounded-2xl shadow-md overflow-hidden border border-gray-100">
+                    <div className="w-full h-40 sm:h-48 md:h-56 bg-gray-200" />
+                    <div className="p-5 md:p-6">
+                      <div className="h-3 bg-gray-200 rounded w-1/3 mb-3" />
+                      <div className="h-5 bg-gray-200 rounded w-3/4 mb-4" />
+                      <div className="flex justify-between items-center">
+                        <div className="h-4 bg-gray-200 rounded w-1/4" />
+                        <div className="text-right">
+                          <div className="h-5 bg-gray-200 rounded w-20 ml-auto" />
+                          <div className="h-3 bg-gray-200 rounded w-16 mt-2" />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+           ) : filteredServices.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8">
               {filteredServices.map((service) => (
                 <ServiceCard key={service.id} service={service} />

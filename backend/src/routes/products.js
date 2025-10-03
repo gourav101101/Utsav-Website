@@ -9,7 +9,7 @@ router.get('/', async (req, res) => {
   try {
     const products = await Product.find({}).sort({ createdAt: -1 }).lean();
     // Ensure compatibility: return `image` for older clients but also include `images`.
-    const rows = products.map(p => ({ ...p, image: (p.images && p.images.length > 0) ? p.images[0] : (p.image || ''), images: p.images || (p.image ? [p.image] : []) }));
+  const rows = products.map(p => ({ ...p, image: (p.images && p.images.length > 0) ? p.images[0] : (p.image || ''), images: p.images || (p.image ? [p.image] : []), inclusions: p.inclusions || [] }));
     res.json({ success: true, rows });
   } catch (err) {
     console.error(err);
@@ -22,7 +22,7 @@ router.get('/:id', async (req, res) => {
   try {
     const p = await Product.findById(req.params.id).lean();
     if (!p) return res.status(404).json({ success: false, error: 'Not found' });
-    const row = { ...p, image: (p.images && p.images.length > 0) ? p.images[0] : (p.image || ''), images: p.images || (p.image ? [p.image] : []) };
+  const row = { ...p, image: (p.images && p.images.length > 0) ? p.images[0] : (p.image || ''), images: p.images || (p.image ? [p.image] : []), inclusions: p.inclusions || [] };
     res.json({ success: true, row });
   } catch (err) {
     console.error(err);
@@ -33,10 +33,11 @@ router.get('/:id', async (req, res) => {
 // POST /api/products (admin)
 router.post('/', adminAuth, async (req, res) => {
   try {
-    const { title, description, image, images, price, category } = req.body;
+  const { title, description, image, images, price, category, inclusions } = req.body;
     const imgs = Array.isArray(images) ? images : (image ? [image] : []);
     if (!title && imgs.length === 0) return res.status(400).json({ success: false, error: 'product must include title or image' });
-    const p = new Product({ title, description, images: imgs, price: price ? String(price) : '', category });
+  const incs = Array.isArray(inclusions) ? inclusions.map(i => String(i)) : [];
+  const p = new Product({ title, description, images: imgs, price: price ? String(price) : '', category, inclusions: incs });
     await p.save();
     res.json({ success: true, id: p._id, type: 'product' });
   } catch (err) {
@@ -48,9 +49,10 @@ router.post('/', adminAuth, async (req, res) => {
 // PUT /api/products/:id (admin)
 router.put('/:id', adminAuth, async (req, res) => {
   try {
-    const { title, description, image, images, price, category } = req.body;
+  const { title, description, image, images, price, category, inclusions } = req.body;
     const imgs = Array.isArray(images) ? images : (image ? [image] : []);
-    const updated = await Product.findByIdAndUpdate(req.params.id, { title, description, images: imgs, price: price ? String(price) : '', category }, { new: true });
+  const incs = Array.isArray(inclusions) ? inclusions.map(i => String(i)) : [];
+  const updated = await Product.findByIdAndUpdate(req.params.id, { title, description, images: imgs, price: price ? String(price) : '', category, inclusions: incs }, { new: true });
     const row = { ...updated.toObject(), image: (updated.images && updated.images.length > 0) ? updated.images[0] : '', images: updated.images || [] };
     res.json({ success: true, row });
   } catch (err) {

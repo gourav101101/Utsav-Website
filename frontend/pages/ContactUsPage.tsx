@@ -47,10 +47,10 @@ const ContactUsPage: React.FC = () => {
                     <div>
                       <h3 className="font-bold text-xl mb-2 text-gray-900">Phone</h3>
                       <a 
-                        href="tel:+919752844488" 
+                        href="tel:+91981666060" 
                         className="text-primary hover:text-primary-dark text-lg font-semibold hover:underline transition-colors"
                       >
-                        +91 97528 44488
+                        +91 99816 66060
                       </a>
                       <p className="text-gray-600 mt-1">Available 9 AM - 8 PM</p>
                     </div>

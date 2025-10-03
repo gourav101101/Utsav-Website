@@ -5,6 +5,7 @@ const ProductSchema = new mongoose.Schema({
   description: { type: String, default: '' },
   // support multiple images per product
   images: { type: [String], default: [] },
+  inclusions: { type: [String], default: [] },
   price: { type: String, default: '' },
   category: { type: String, default: '' },
   createdAt: { type: Date, default: Date.now }

@@ -10,7 +10,7 @@ const AdminProducts: React.FC = () => {
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState<string | null>(null);
     const [showCreateProduct, setShowCreateProduct] = useState(false);
-    const [newProduct, setNewProduct] = useState({ title: '', price: '', category: '', image: '', images: [] as string[], description: '' });
+    const [newProduct, setNewProduct] = useState({ title: '', price: '', category: '', image: '', images: [] as string[], description: '', inclusions: [] as string[] });
     // Modal states
     const [editingProduct, setEditingProduct] = useState<any | null>(null);
     const [editOpen, setEditOpen] = useState(false);
@@ -38,9 +38,10 @@ const AdminProducts: React.FC = () => {
             if (!newProduct.title) return setMessage('Title is required');
             try {
                 const imagesArr = (newProduct.images || []).map((s:string)=>s.trim()).filter(Boolean);
-                await createProduct({ title: newProduct.title, description: newProduct.description, price: newProduct.price, category: newProduct.category, images: imagesArr, image: imagesArr[0] });
+                const inclusionsArr = (newProduct.inclusions || []).map((s:string)=>s.trim()).filter(Boolean);
+                await createProduct({ title: newProduct.title, description: newProduct.description, price: newProduct.price, category: newProduct.category, images: imagesArr, image: imagesArr[0], inclusions: inclusionsArr });
             setMessage('Product created');
-                setNewProduct({ title: '', price: '', category: '', image: '', images: [], description: '' });
+                setNewProduct({ title: '', price: '', category: '', image: '', images: [], description: '', inclusions: [] });
             setShowCreateProduct(false);
             load();
         } catch (err: any) {
@@ -120,6 +121,18 @@ const AdminProducts: React.FC = () => {
                             <button type="button" className="px-3 py-2 rounded bg-primary text-white" onClick={() => setNewProduct({ ...newProduct, images: [...newProduct.images, ''] })}>Add Image</button>
                         </div>
                     </div>
+                                        <label className="col-span-1 md:col-span-4 text-sm text-gray-700 mt-2 mb-2">What's Included (inclusions)</label>
+                                        <div className="col-span-1 md:col-span-4 space-y-2">
+                                            {newProduct.inclusions.map((inc, idx) => (
+                                                <div key={idx} className="flex items-center gap-2">
+                                                    <input className="flex-1 p-2 border rounded" value={inc} onChange={e => setNewProduct({ ...newProduct, inclusions: newProduct.inclusions.map((x,i)=> i===idx ? e.target.value : x) })} />
+                                                    <button type="button" className="px-3 py-2 sm:py-1 rounded border text-sm" onClick={() => setNewProduct({ ...newProduct, inclusions: newProduct.inclusions.filter((_,i)=>i!==idx) })}>Remove</button>
+                                                </div>
+                                            ))}
+                                            <div>
+                                                <button type="button" className="px-3 py-2 rounded bg-primary text-white" onClick={() => setNewProduct({ ...newProduct, inclusions: [...newProduct.inclusions, ''] })}>Add Inclusion</button>
+                                            </div>
+                                        </div>
                     <div className="col-span-1 md:col-span-4 flex justify-end">
                         <button type="submit" className="bg-primary text-white px-4 py-2 rounded">Create</button>
                     </div>

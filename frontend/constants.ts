@@ -1,6 +1,6 @@
 import { ServiceItem, Category } from './types';
 
-export const WHATSAPP_NUMBER = '919752844488';
+export const WHATSAPP_NUMBER = '9981666060';
 
 export const SERVICES_DATA: ServiceItem[] = [
   {
