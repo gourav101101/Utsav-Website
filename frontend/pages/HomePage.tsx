@@ -64,7 +64,7 @@ const HomePage: React.FC = () => {
             longDescription: r.description || '',
             price: r.price ? Number(r.price) || 0 : 0,
             images: r.image ? [r.image] : ['https://picsum.photos/800/600'],
-            inclusions: [],
+            inclusions: r.inclusions && Array.isArray(r.inclusions) ? r.inclusions : (r.inclusions ? String(r.inclusions).split(',').map((s:string)=>s.trim()).filter(Boolean) : []),
             _categoryName: builtCatMap[slug] || undefined,
           };
         });

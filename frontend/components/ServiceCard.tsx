@@ -11,12 +11,15 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ service }) => {
   return (
     <Link to={`/service/${service.id}`} className="group block">
       <div className="bg-white rounded-2xl shadow-md overflow-hidden transform hover:-translate-y-2 hover:shadow-2xl transition-all duration-500 border border-gray-100">
-          <div className="relative overflow-hidden">
-          <img
-            src={service.images[0]}
-            alt={service.title}
-            className="w-full h-40 sm:h-48 md:h-56 object-cover group-hover:scale-110 transition-transform duration-700"
-          />
+          <div className="relative overflow-hidden bg-gray-100">
+            <div className="w-full">
+              <img
+                src={service.images[0]}
+                alt={service.title}
+                className="w-full h-auto sm:h-48 md:h-56 object-contain sm:object-cover group-hover:scale-110 transition-transform duration-700"
+                style={{ maxHeight: 320, objectPosition: 'center' }}
+              />
+            </div>
           <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
           <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm rounded-full px-3 py-1 text-xs font-semibold text-gray-700 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
             View Details

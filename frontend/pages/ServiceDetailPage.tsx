@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import type { ServiceItem } from '../types';
+import { Category } from '../types';
 import { WHATSAPP_NUMBER } from '../constants';
 import { fetchProductById, fetchProductsByCategory } from '../src/utils/apiClient';
 import ServiceCard from '../components/ServiceCard';
@@ -44,13 +45,13 @@ const ServiceDetailPage: React.FC = () => {
           // Map the API response to the ServiceItem structure
           const serviceItem: ServiceItem = {
             id: product._id || product.id,
-            category: product.category || 'uncategorized', // Provide a fallback
+            category: (product.category as Category) || Category.DECOR,
             title: product.title || 'Untitled',
             shortDescription: product.description?.slice(0, 120) || '',
             longDescription: product.description || '',
             price: Number(product.price) || 0,
             images: (product.images && product.images.length > 0) ? product.images : (product.image ? [product.image] : ['/placeholder.png']),
-            inclusions: [], // You might want to add this to your product schema
+            inclusions: Array.isArray(product.inclusions) ? product.inclusions : (product.inclusions ? String(product.inclusions).split(',').map((s:string)=>s.trim()).filter(Boolean) : []),
           };
           setService(serviceItem);
 
@@ -180,7 +181,8 @@ const ServiceDetailPage: React.FC = () => {
               <img 
                 src={service.images[activeImageIndex]} 
                 alt={service.title} 
-                className="w-full h-40 sm:h-56 md:h-80 lg:h-[500px] object-cover"
+                className="w-full h-auto sm:h-56 md:h-80 lg:h-[500px] object-contain sm:object-cover"
+                style={{ maxHeight: 420, objectPosition: 'center' }}
               />
               {service.images.length > 1 && (
                 <>
