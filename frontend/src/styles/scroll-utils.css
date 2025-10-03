@@ -1,0 +1,16 @@
+/* Cross-browser hide scrollbar utilities and centering helpers */
+
+/* Hide scrollbar for WebKit */
+.hide-scrollbar::-webkit-scrollbar { display: none; }
+
+/* Hide scrollbar for IE, Edge */
+.hide-scrollbar { -ms-overflow-style: none; }
+
+/* Hide scrollbar for Firefox */
+.hide-scrollbar { scrollbar-width: none; }
+
+/* Utility to make a horizontal flex container centered when possible */
+.center-pills { justify-content: center; }
+
+/* Smooth scrolling behavior */
+.pills-scroll { scroll-behavior: smooth; }

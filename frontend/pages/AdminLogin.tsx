@@ -43,7 +43,7 @@ const AdminLogin: React.FC = () => {
         </div>
       </form>
 
-      <p className="mt-4 text-sm text-gray-600">Use username <code>admin</code> and password <code>123</code>. To logout, run <code>sessionStorage.removeItem('UTSAV_ADMIN_KEY')</code>.</p>
+  {/* Credentials and logout tip removed for security in deployed builds */}
     </div>
   );
 };

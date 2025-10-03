@@ -5,7 +5,7 @@ import { SERVICES_DATA } from '../constants';
 import { fetchProducts, fetchCategories } from '../src/utils/apiClient';
 import ServiceCard from '../components/ServiceCard';
 import { Category } from '../types';
-import { LightbulbIcon, SparkleIcon, ChatBubbleIcon, ClockIcon } from '../components/Icons';
+import { LightbulbIcon, SparkleIcon, WhatsAppIcon, ClockIcon } from '../components/Icons';
 
 const TrustBadge: React.FC<{ icon: React.ReactNode; title: string; subtitle: string; }> = ({ icon, title, subtitle }) => (
   <div className="flex flex-col items-center text-center px-4">
@@ -24,6 +24,19 @@ const HomePage: React.FC = () => {
   const searchQuery = searchParams.get('search');
 
   const [dynamicServices, setDynamicServices] = React.useState<any[] | null>(null);
+  const [catMap, setCatMap] = React.useState<Record<string,string>>({});
+
+  // helpers
+  const slugify = (s?: string) => (s || '').toString().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+  const titleizeFromSlug = (slug: string) => (slug || '').split('-').filter(Boolean).map(w => w[0]?.toUpperCase() + w.slice(1)).join(' ');
+
+  const resolveCategory = (q?: string | null) => {
+    if (!q) return { slug: '', display: '' };
+    const raw = q.toString();
+    const slug = slugify(raw);
+    const display = (catMap && (catMap[raw] || catMap[slug])) || titleizeFromSlug(slug) || raw;
+    return { slug, display };
+  };
 
   React.useEffect(() => {
     let mounted = true;
@@ -32,12 +45,13 @@ const HomePage: React.FC = () => {
         const [rows, cats] = await Promise.all([fetchProducts(), fetchCategories()]);
         if (!mounted) return;
 
-        // Build a map of category slug -> name
-        const catMap: Record<string, string> = {};
+        // Build a map of category slug -> name and persist it so other render logic can use it
+        const builtCatMap: Record<string, string> = {};
         (cats || []).forEach((c: any) => {
           const slug = c.slug || (c.name || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-          catMap[slug] = c.name || slug;
+          builtCatMap[slug] = c.name || slug;
         });
+        setCatMap(builtCatMap);
 
         // Map API rows to ServiceItem-like objects
         const mapped = rows.map(r => {
@@ -51,7 +65,7 @@ const HomePage: React.FC = () => {
             price: r.price ? Number(r.price) || 0 : 0,
             images: r.image ? [r.image] : ['https://picsum.photos/800/600'],
             inclusions: [],
-            _categoryName: catMap[slug] || undefined,
+            _categoryName: builtCatMap[slug] || undefined,
           };
         });
         setDynamicServices(mapped as any[]);
@@ -106,32 +120,34 @@ const HomePage: React.FC = () => {
   }, [category, searchQuery, dynamicServices]);
   
   const getHeroContent = () => {
-    switch (category) {
-      case Category.DECOR:
-        return {
-          title: 'Stunning Decor & Flawless Events',
-          description: 'Transforming venues and creating memories. Let us design your perfect celebration in Indore.',
-          gradient: 'from-pink-500 to-rose-500',
-        };
-      case Category.GIFTS:
-        return {
-          title: 'Thoughtfully Curated Gift Hampers',
-          description: 'Discover the perfect gift for your loved ones. Unique and beautiful hampers delivered in Indore.',
-          gradient: 'from-teal-500 to-cyan-500',
-        };
-      case Category.FOOD:
-        return {
-          title: 'Exquisite Gourmet Sweets & Treats',
-          description: 'Indulge in our artisanal sweets and chocolates, crafted with love for your special moments in Indore.',
-          gradient: 'from-amber-500 to-orange-500',
-        };
-      default:
-        return {
-          title: 'Unforgettable Celebrations Start Here',
-          description: 'Explore our curated collection of decor, gifts, and gourmet sweets for every special occasion in Indore.',
-          gradient: 'from-purple-600 to-indigo-700',
-        };
+    const { slug } = resolveCategory(category);
+    // match by keyword in slug to be tolerant of different slug conventions
+    if (slug.includes('decor')) {
+      return {
+        title: 'Stunning Decor & Flawless Events',
+        description: 'Transforming venues and creating memories. Let us design your perfect celebration in Indore.',
+        gradient: 'from-pink-500 to-rose-500',
+      };
     }
+    if (slug.includes('gift')) {
+      return {
+        title: 'Thoughtfully Curated Gift Hampers',
+        description: 'Discover the perfect gift for your loved ones. Unique and beautiful hampers delivered in Indore.',
+        gradient: 'from-teal-500 to-cyan-500',
+      };
+    }
+    if (slug.includes('food')) {
+      return {
+        title: 'Exquisite Gourmet Sweets & Treats',
+        description: 'Indulge in our artisanal sweets and chocolates, crafted with love for your special moments in Indore.',
+        gradient: 'from-amber-500 to-orange-500',
+      };
+    }
+    return {
+      title: 'Unforgettable Celebrations Start Here',
+      description: 'Explore our curated collection of decor, gifts, and gourmet sweets for every special occasion in Indore.',
+      gradient: 'from-purple-600 to-indigo-700',
+    };
   };
 
   const heroContent = getHeroContent();
@@ -151,6 +167,21 @@ const HomePage: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Active category pill (mobile-friendly) */}
+      {(() => {
+        const q = category;
+        if (!q) return null;
+        // use resolver that titleizes slug immediately and prefers catMap when available
+        const { display } = resolveCategory(q);
+        return (
+          <div className="bg-white py-3 px-4 border-b md:hidden">
+            <div className="max-w-7xl mx-auto flex items-center justify-center">
+              <div className="text-sm font-semibold text-gray-700">Showing: <span className="ml-2 inline-block bg-primary/10 text-primary px-3 py-1 rounded-full">{display}</span></div>
+            </div>
+          </div>
+        );
+      })()}
 
       {/* Services Section */}
       <div className="py-16 md:py-24 bg-gray-50">
@@ -200,10 +231,10 @@ const HomePage: React.FC = () => {
                     icon={<SparkleIcon className="h-12 w-12 md:h-16 md:w-16"/>} 
                     title="Premium Quality" 
                     subtitle="We use only the finest materials and freshest ingredients for lasting memories." />
-                <TrustBadge 
-                    icon={<ChatBubbleIcon className="h-12 w-12 md:h-16 md:w-16"/>} 
-                    title="Personalized Service" 
-                    subtitle="Dedicated support and consultation to bring your dream celebration to life." />
+        <TrustBadge 
+          icon={<WhatsAppIcon className="h-12 w-12 md:h-16 md:w-16"/>} 
+          title="Personalized Service" 
+          subtitle="Dedicated support and consultation to bring your dream celebration to life." />
                 <TrustBadge 
                     icon={<ClockIcon className="h-12 w-12 md:h-16 md:w-16"/>} 
                     title="Timely Execution" 
